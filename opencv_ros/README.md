@@ -1,6 +1,6 @@
 # Read IP camera
 
-Reads IP camera and publish ROS image
+Reads IP camera and publishes ROS image
 
 ## Usage:
 
