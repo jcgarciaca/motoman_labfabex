@@ -25,13 +25,13 @@ from object_detection.utils import label_map_util
 from object_detection.utils import visualization_utils as vis_util
 
 ######### Set model here ############
-MODEL_NAME = 'sdv_recognition/model-21936'
+MODEL_NAME = 'sdv_piece/first/model-1329'
 # By default models are stored in data/models/
 MODEL_PATH = os.path.join(os.path.dirname(sys.path[0]),'data','models' , MODEL_NAME)
 # Path to frozen detection graph. This is the actual model that is used for the object detection.
 PATH_TO_CKPT = MODEL_PATH + '/frozen_inference_graph.pb'
 ######### Set the label map file here ###########
-LABEL_NAME = 'sdv_label_map.pbtxt'
+LABEL_NAME = 'motoman_sdv.pbtxt'
 # By default label maps are stored in data/labels/
 PATH_TO_LABELS = os.path.join(os.path.dirname(sys.path[0]),'data','labels', LABEL_NAME)
 ######### Set the number of classes here #########
@@ -74,13 +74,13 @@ with detection_graph.as_default():
         self.image_sub = rospy.Subscriber("/image_raw", Image, self.image_cb, queue_size = 1)
         self.target_sub = rospy.Subscriber("/reference_pose_reached", Int8, self.target_cb, queue_size = 1)
         self.point_pub = rospy.Publisher("/center_point", Point, queue_size = 1)
-        self.target_repeat_pub = rospy.Publisher("/reference_point_reached", Int8, queue_size = 1)
+        self.target_repeat_pub = rospy.Publisher("/reference_pose_reached", Int8, queue_size = 1)
         self.current_image = Image()
         self.target = Int8()
       
 
       def target_cb(self, data):
-        self.target = data
+          self.target = data
           try:
             cv_image = self.bridge.imgmsg_to_cv2(self.current_image, 'bgr8')
           except CvBridgeError as e:
@@ -107,7 +107,7 @@ with detection_graph.as_default():
               np.squeeze(classes).astype(np.int32),
               np.squeeze(scores),
               category_index,
-              max_boxes_to_draw=10,
+              max_boxes_to_draw=2,
               min_score_thresh=.7,
               use_normalized_coordinates=True,
               line_thickness=2)          
@@ -117,7 +117,7 @@ with detection_graph.as_default():
           target_found = False
           center_point = Point()
           for i in range(len(objects)):
-            if(self.target.data == objects[i][0]):
+            if(objects[i][0] == 1):
               print("target found")
               target_found = True
               [ymin, xmin, ymax, xmax] = objects[i][2]
@@ -134,6 +134,8 @@ with detection_graph.as_default():
               center_point.x = int((xmax + xmin)/2)
               center_point.y = int((ymax + ymin)/2)
               center_point.z = 0
+
+              rospy.loginfo("Target found")
 
               break
 

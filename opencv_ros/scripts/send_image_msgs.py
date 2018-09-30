@@ -20,7 +20,7 @@ class send_image:
     
     def publish_image(self, data):
         images = os.listdir(IMAGE_FOLDER)
-        image_file = os.path.join(IMAGE_FOLDER, images[random.randint(0, len(images))])
+        image_file = os.path.join(IMAGE_FOLDER, images[random.randint(0, len(images) - 1)])
         cv_image = cv2.imread(image_file)
 
         try:
