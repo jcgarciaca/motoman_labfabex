@@ -1,9 +1,0 @@
-item {
-  id: 1
-  name: 'Up_button'
-}
-
-item {
-  id: 2
-  name: 'Down_button'
-}

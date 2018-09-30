@@ -16,8 +16,6 @@ find_package(catkin REQUIRED COMPONENTS
   std_msgs
 )
 
-find_package(OpenCV REQUIRED)
-
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
 
@@ -110,7 +108,7 @@ find_package(OpenCV REQUIRED)
 catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES opencv_ros
-#  CATKIN_DEPENDS cv_bridge image_transport roscpp sensor_msgs std_msgs
+#  CATKIN_DEPENDS cv_bridge image_transport roscpp rospy sensor_msgs std_msgs
 #  DEPENDS system_lib
 )
 
@@ -202,16 +200,3 @@ include_directories(
 
 ## Add folders to be run by python nosetests
 # catkin_add_nosetests(test)
-
-add_executable(get_clicked_img src/get_clicked_img.cpp)
-target_link_libraries(get_clicked_img ${OpenCV_LIBS} ${catkin_LIBRARIES})
-
-
-add_executable(get_depth_img src/get_depth_img.cpp)
-target_link_libraries(get_depth_img ${OpenCV_LIBS} ${catkin_LIBRARIES})
-
-add_executable(stitching src/stitching.cpp)
-target_link_libraries(stitching ${OpenCV_LIBS} ${catkin_LIBRARIES})
-
-add_executable(stitching_detailed src/stitching_detailed.cpp)
-target_link_libraries(stitching_detailed ${OpenCV_LIBS} ${catkin_LIBRARIES})

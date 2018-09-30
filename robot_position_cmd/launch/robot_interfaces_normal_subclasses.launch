@@ -1,0 +1,38 @@
+<!---->
+<launch>
+	<arg name="press_button" default="true"/>
+	<arg name="tf" default="true"/>
+
+	<include file="$(find robotic_arm_mbpo_moveit_config)/launch/demo.launch"/>
+
+	<include file="$(find robot_position_cmd)/launch/init_interfaces.launch"/>
+
+	<node pkg="tf" type="static_transform_publisher" name="camera_tf_publisher" args="0.0 0.02 0.60 -1.5707 0.0 -1.95 base_arm_link tf_camera 20" output="screen" />
+	<node pkg="tf" type="static_transform_publisher" name="cloud_tf_publisher" args="0 0 0 0 0 0 tf_camera camera_color_optical_frame 20" output="screen" />
+
+	<node pkg="robot_position_cmd" type="motors_control.py" name="motors_control" output="screen" />
+
+	<group if="$(arg press_button)">
+		<node pkg="robot_position_cmd" type="robot_trajectory_normal" name="robot_movement_command" output="screen" />
+	</group>
+
+	<group unless="$(arg press_button)">
+		<node pkg="robot_position_cmd" type="robot_trajectory_normal_contact" name="robot_movement_command" output="screen" />
+	</group>
+
+	<group if="$(arg tf)">
+		<node pkg="tensorflow_object_detector" type="object_detection_bndbox_up_down.py" name="detector_up_down_buttons" output="screen" />
+        <node pkg="tensorflow_object_detector" type="object_detection_bndbox_numbers.py" name="detector_number_buttons" output="screen" />
+	</group>
+
+	<group unless="$(arg tf)">
+		<node pkg="opencv_ros" type="get_clicked_img" name="get_clicked_img" output="screen" />
+	</group>
+
+	<include file="$(find realsense2_camera)/launch/rs_rgbd.launch"/>
+
+	<node pkg="camera_match" type="box_to_normal" name="box_pixels_to_robot_points" output="screen" />
+
+	<node pkg="robot_position_cmd" type="button_target_management.py" name="button_target_management" output="screen" />
+
+</launch>

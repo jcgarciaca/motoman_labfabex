@@ -10,7 +10,7 @@ class ip_camera:
     def __init__(self):
         self.image_pub = rospy.Publisher('/image_raw', Image, queue_size = 1)
         self.compressed_pub = rospy.Publisher('/compressed_img', CompressedImage, queue_size = 1)
-        self.cap = cv2.VideoCapture(0) # ('rtsp://motoman:motoman@168.176.36.42:88/videoMain')
+        self.cap = cv2.VideoCapture('rtsp://motoman:motoman@168.176.27.81:88/videoMain')
         self.bridge = CvBridge()
         self.msg = CompressedImage()
         self.msg.format = 'jpeg'

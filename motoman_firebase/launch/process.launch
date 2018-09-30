@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<launch>
+    <include file="$(find rosbridge_server)/launch/rosbridge_websocket.launch"/>
+    <node name="firebase_initializer" pkg="motoman_firebase" type="firebase_initializer.py"/>
+    <!-- <group if="$(arg firebase)">
+        <node name="firebase_coms" pkg="maya_process" type="firebase_launcher.sh" />
+    </group> -->
+</launch>

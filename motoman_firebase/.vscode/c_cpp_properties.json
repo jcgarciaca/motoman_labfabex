@@ -1,0 +1,19 @@
+{
+  "configurations": [
+    {
+      "browse": {
+        "databaseFilename": "",
+        "limitSymbolsToIncludedHeaders": true
+      },
+      "includePath": [
+        "/home/motoman/catkin_ws/devel/include",
+        "/opt/ros/kinetic/include",
+        "/home/motoman/catkin_ws/src/motoman-multigroup_fix/motoman_driver/include",
+        "/home/motoman/catkin_ws/src/opencv_ros/include",
+        "/home/motoman/catkin_ws/src/robot_position_cmd/include",
+        "/usr/include"
+      ],
+      "name": "Linux"
+    }
+  ]
+}

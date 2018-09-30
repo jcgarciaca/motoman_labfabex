@@ -1,0 +1,9 @@
+topic_list:
+    - name: sda10f_r1_controller
+      ns: sda10f
+      group: 0
+      joints: ['joint_s','joint_l','joint_e','joint_u','joint_r','joint_b','joint_t']
+    - name: sda10f_b1_controller
+      ns: sda10f
+      group: 1
+      joints: ['rail_y']

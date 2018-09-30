@@ -63,7 +63,7 @@ config = tf.ConfigProto()
 # config.gpu_options.per_process_gpu_memory_fraction = GPU_FRACTION
 
 # Detection
-attempts = 5
+attempts = 2
 current_attempts = 0
 with detection_graph.as_default():
     # with tf.Session(graph=detection_graph,config=config) as sess:
@@ -81,6 +81,20 @@ with detection_graph.as_default():
         self.button_repeat_pub = rospy.Publisher("/target_button", Int8, queue_size=1)
         self.current_image = Image()
         self.target_button = Int8()
+
+
+      
+      '''
+      def button_cb_original(self, data):
+        global enable_target_button
+        enable_target_button = True
+        global target_button
+        target_button = data
+        print("target button recieved: ", target_button)
+      '''
+
+
+
 
 
       def button_cb(self, data):
@@ -112,7 +126,7 @@ with detection_graph.as_default():
               np.squeeze(scores),
               category_index,
               max_boxes_to_draw=10,
-              min_score_thresh=.6,
+              min_score_thresh=.4,
               use_normalized_coordinates=True,
               line_thickness=2)          
           
@@ -159,8 +173,8 @@ with detection_graph.as_default():
           else:
             current_attempts += 1
             if(current_attempts < attempts):
-              rospy.sleep(0.1)
               print("Search button again")              
+              rospy.sleep(0.1)
               self.button_repeat_pub.publish(self.target_button)
               
             else:
