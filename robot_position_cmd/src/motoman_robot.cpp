@@ -5,9 +5,10 @@
 #include <std_msgs/Int8.h>
 #include <geometry_msgs/Pose.h>
 #include <motoman_msgs/WriteSingleIO.h>
+#include <geometry_msgs/Point.h>
 
 void move_take_img_pose_cb(const std_msgs::Int8ConstPtr msg);
-void target_point_cb(const std_msgs::Int8ConstPtr msg);
+void pick_piece_cb(const geometry_msgs::PointConstPtr msg);
 void place_piece_cb(const std_msgs::Int8ConstPtr msg);
 void move_start_cb(const std_msgs::Int8ConstPtr msg);
 int getIK(moveit_msgs::GetPositionIK & server, ros::ServiceClient & client, 
@@ -20,7 +21,7 @@ void move_robot_to_pose(moveit::planning_interface::MoveGroupInterface & group,
     moveit::planning_interface::MoveGroupInterface & move_group, geometry_msgs::Pose & pose);
 void move_to_take_img_pose(moveit::planning_interface::MoveGroupInterface & group, 
     moveit::planning_interface::MoveGroupInterface & move_group);
-void move_to_target_point(moveit::planning_interface::MoveGroupInterface & group, 
+void move_to_pick_piece(moveit::planning_interface::MoveGroupInterface & group, 
     moveit::planning_interface::MoveGroupInterface & move_group);
 void move_to_place_piece(moveit::planning_interface::MoveGroupInterface & group, 
     moveit::planning_interface::MoveGroupInterface & move_group);
@@ -85,7 +86,7 @@ int main(int argc, char * argv[]){
 
     // subscribers
     ros::Subscriber move_ref_pose_sub = nh.subscribe("/move_reference_pose", 1, move_take_img_pose_cb);
-    ros::Subscriber target_point_sub = nh.subscribe("/reference_pose_reached", 1, target_point_cb);
+    ros::Subscriber pick_piece_sub = nh.subscribe("/center_point", 1, pick_piece_cb);
     ros::Subscriber place_piece_sub = nh.subscribe("/pick_up_completed", 1, place_piece_cb);
     ros::Subscriber start_pose_cmd_sub = nh.subscribe("/place_completed", 1, move_start_cb);
 
@@ -104,20 +105,9 @@ int main(int argc, char * argv[]){
         if(move_to_reference_pose){
             move_to_reference_pose = false;
             move_to_take_img_pose(group, move_group);
-            ros::Duration(0.2).sleep();
-            move_to_target_point(group, move_group);
-            ros::Duration(0.2).sleep();
-            move_to_place_piece(group, move_group);
-            ros::Duration(0.2).sleep();
-            move_to_start(group, move_group);
-        }
-/*
-        if(move_to_reference_pose){
-            move_to_reference_pose = false;
-            move_to_take_img_pose(group, move_group);
         }else if(move_to_pick_up){
             move_to_pick_up = false;
-            move_to_target_point(group, move_group);
+            move_to_pick_piece(group, move_group);
         }else if(move_to_place){
             move_to_place = false;
             move_to_place_piece(group, move_group);
@@ -125,7 +115,6 @@ int main(int argc, char * argv[]){
             move_start_pos = false;
             move_to_start(group, move_group);
         }
-*/
         ros::spinOnce();
     }
 
@@ -146,7 +135,7 @@ void move_to_take_img_pose(moveit::planning_interface::MoveGroupInterface & grou
     std_msgs::Int8 reference_reached;
     reference_reached.data = 1;
     ros::Duration(0.2).sleep();
-    // move_ref_pose_pub.publish(reference_reached);
+    move_ref_pose_pub.publish(reference_reached);
 }
 
 void move_take_img_pose_cb(const std_msgs::Int8ConstPtr msg){
@@ -154,7 +143,7 @@ void move_take_img_pose_cb(const std_msgs::Int8ConstPtr msg){
 }
 
 
-void move_to_target_point(moveit::planning_interface::MoveGroupInterface & group, 
+void move_to_pick_piece(moveit::planning_interface::MoveGroupInterface & group, 
     moveit::planning_interface::MoveGroupInterface & move_group){
 
     ROS_INFO("Moving the robot to pick up pose");
@@ -179,10 +168,10 @@ void move_to_target_point(moveit::planning_interface::MoveGroupInterface & group
     std_msgs::Int8 pick_up_complete;
     pick_up_complete.data = 1;
     ros::Duration(0.2).sleep();
-    // pick_up_complete_pub.publish(pick_up_complete);
+    pick_up_complete_pub.publish(pick_up_complete);
 }
 
-void target_point_cb(const std_msgs::Int8ConstPtr msg){
+void pick_piece_cb(const geometry_msgs::PointConstPtr msg){
     move_to_pick_up = true;
 }
 
@@ -212,7 +201,7 @@ void move_to_place_piece(moveit::planning_interface::MoveGroupInterface & group,
     std_msgs::Int8 place_piece_complete;
     place_piece_complete.data = 1;
     ros::Duration(0.2).sleep();
-    // place_complete_pub.publish(place_piece_complete);
+    place_complete_pub.publish(place_piece_complete);
 }
 
 void place_piece_cb(const std_msgs::Int8ConstPtr msg){
@@ -228,7 +217,7 @@ void move_to_start(moveit::planning_interface::MoveGroupInterface & group,
     std_msgs::Int8 task_complete;
     task_complete.data = 1;
     ros::Duration(0.2).sleep();
-    // task_complete_pub.publish(task_complete);
+    task_complete_pub.publish(task_complete);
 }
 
 

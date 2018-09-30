@@ -118,24 +118,17 @@ with detection_graph.as_default():
           center_point = Point()
           for i in range(len(objects)):
             if(objects[i][0] == 1):
-              print("target found")
+              rospy.loginfo("Target found")
               target_found = True
               [ymin, xmin, ymax, xmax] = objects[i][2]
               xmin *= image_cols
               xmax *= image_cols
               ymin *= image_rows
-              ymax *= image_rows
-
-              print("xmin: ", xmin)
-              print("ymin: ", ymin)
-              print("xmax: ", xmax)
-              print("ymax: ", ymax)
+              ymax *= image_rows              
               
               center_point.x = int((xmax + xmin)/2)
               center_point.y = int((ymax + ymin)/2)
               center_point.z = 0
-
-              rospy.loginfo("Target found")
 
               break
 
